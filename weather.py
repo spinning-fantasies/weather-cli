@@ -178,7 +178,7 @@ def display_weather_info(weather_data, imperial=False):
     style.change_color(style.RESET)
 
 
-    print(f"({temperature}°{'F' if imperial else 'C'})")
+    print(f"{temperature}°{'F' if imperial else 'C'}")
 
 
 def _select_weather_display_params(weather_id):
