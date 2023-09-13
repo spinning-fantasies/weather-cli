@@ -5,9 +5,10 @@ import json
 import sys
 from configparser import ConfigParser
 from urllib import error, parse, request
-# from pprint import pp
+from pprint import pp
 
-import style
+import weather_cli.style as style
+
 
 BASE_WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather"
 
@@ -21,6 +22,19 @@ ATMOSPHERE = range(700, 800)
 CLEAR = range(800, 801)
 CLOUDY = range(801, 900)
 
+def main():
+    # print(f"api_key : {_get_api_key()}")
+
+    user_args = read_user_cli_args()
+    # print(user_args.city, user_args.imperial)
+
+    query_url = build_weather_query(user_args.city, user_args.imperial)
+    # print(query_url)
+
+    weather_data = get_weather_data(query_url)
+    # pp(weather_data)
+
+    display_weather_info(weather_data, user_args.imperial)
 
 def _get_api_key():
     """Fetch the API key from your configuration file.
@@ -216,16 +230,6 @@ def _select_weather_display_params(weather_id):
         display_params = ("🌈", style.RESET)
 
     return display_params
+
 if __name__ == "__main__":
-    # print(f"api_key : {_get_api_key()}")
-
-    user_args = read_user_cli_args()
-    # print(user_args.city, user_args.imperial)
-
-    query_url = build_weather_query(user_args.city, user_args.imperial)
-    # print(query_url)
-
-    weather_data = get_weather_data(query_url)
-    # pp(weather_data)
-
-    display_weather_info(weather_data, user_args.imperial)
+    main()
