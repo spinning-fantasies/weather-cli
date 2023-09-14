@@ -3,7 +3,6 @@
 import argparse
 import json
 import sys
-from configparser import ConfigParser
 from urllib import error, parse, request
 from pprint import pp
 import os
@@ -24,6 +23,7 @@ ATMOSPHERE = range(700, 800)
 CLEAR = range(800, 801)
 CLOUDY = range(801, 900)
 
+
 def main():
     # print(f"api_key : {_get_api_key()}")
 
@@ -41,25 +41,10 @@ def main():
 
 load_dotenv()
 
+
 def _get_api_key():
-    """Fetch the API key from your configuration file.
-
-
-    Expects a configuration file named "secrets.ini" with structure:
-
-
-        [openweather]
-
-        api_key=<YOUR-OPENWEATHER-API-KEY>
-
-    """
-
-    # config = ConfigParser()
-
-    # config.read("secrets.ini")
-
-    # return config["openweather"]["api_key"]
-    return os.getenv("OPENWEATHER_API_KEY") 
+    """Fetch the API key from your .env file."""
+    return os.getenv("OPENWEATHER_API_KEY")
 
 
 def read_user_cli_args():
@@ -113,10 +98,7 @@ def build_weather_query(city_input, imperial=False):
 
     units = "imperial" if imperial else "metric"
 
-    url = (
-        f"{BASE_WEATHER_API_URL}?q={url_encoded_city_name}"
-        f"&units={units}&appid={api_key}"
-    )
+    url = f"{BASE_WEATHER_API_URL}?q={url_encoded_city_name}" f"&units={units}&appid={api_key}"
 
     return url
 
@@ -156,8 +138,8 @@ def get_weather_data(query_url):
     except json.JSONDecodeError:
         sys.exit("Couldn't read the server response.")
 
-def display_weather_info(weather_data, imperial=False):
 
+def display_weather_info(weather_data, imperial=False):
     """Prints formatted weather information about a city.
 
 
@@ -177,65 +159,51 @@ def display_weather_info(weather_data, imperial=False):
     weather_description = weather_data["weather"][0]["description"]
     temperature = weather_data["main"]["temp"]
 
-
     style.change_color(style.REVERSE)
     print(f"{city:^{style.PADDING}}", end="")
     style.change_color(style.RESET)
-
 
     weather_symbol, color = _select_weather_display_params(weather_id)
     style.change_color(color)
 
     print(f"\t{weather_symbol}", end=" ")
     print(
-
         f"{weather_description.capitalize():^{style.PADDING}}",
-
         end=" ",
-
     )
 
     style.change_color(style.RESET)
-
 
     print(f"{temperature}°{'F' if imperial else 'C'}")
 
 
 def _select_weather_display_params(weather_id):
-
     if weather_id in THUNDERSTORM:
-
         display_params = ("💥", style.RED)
 
     elif weather_id in DRIZZLE:
-
         display_params = ("💧", style.CYAN)
 
     elif weather_id in RAIN:
-
         display_params = ("💦", style.BLUE)
 
     elif weather_id in SNOW:
-
         display_params = ("⛄️", style.WHITE)
 
     elif weather_id in ATMOSPHERE:
-
         display_params = ("🌀", style.BLUE)
 
     elif weather_id in CLEAR:
-
         display_params = ("🔆", style.YELLOW)
 
     elif weather_id in CLOUDY:
-
         display_params = ("💨", style.WHITE)
 
     else:  # In case the API adds new weather codes
-
         display_params = ("🌈", style.RESET)
 
     return display_params
+
 
 if __name__ == "__main__":
     main()
