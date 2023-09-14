@@ -6,6 +6,8 @@ import sys
 from configparser import ConfigParser
 from urllib import error, parse, request
 from pprint import pp
+import os
+from dotenv import load_dotenv
 
 import weather_cli.style as style
 
@@ -36,6 +38,9 @@ def main():
 
     display_weather_info(weather_data, user_args.imperial)
 
+
+load_dotenv()
+
 def _get_api_key():
     """Fetch the API key from your configuration file.
 
@@ -49,11 +54,12 @@ def _get_api_key():
 
     """
 
-    config = ConfigParser()
+    # config = ConfigParser()
 
-    config.read("secrets.ini")
+    # config.read("secrets.ini")
 
-    return config["openweather"]["api_key"]
+    # return config["openweather"]["api_key"]
+    return os.getenv("OPENWEATHER_API_KEY") 
 
 
 def read_user_cli_args():
